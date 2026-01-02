@@ -193,6 +193,12 @@ class AppTheme {
     border: Border.all(color: Colors.white.withOpacity(0.05)),
   );
 
+  static BoxDecoration get glassDecoration => BoxDecoration(
+    color: cardColor,
+    borderRadius: BorderRadius.circular(16),
+    border: Border.all(color: Colors.white.withOpacity(0.1)),
+  );
+
   static ThemeData get darkTheme => ThemeProvider.darkTheme;
   static ThemeData get lightTheme => ThemeProvider.lightTheme;
 }

@@ -1,7 +1,7 @@
-/// Code Syntax Checker Service
-/// 
-/// Validates code syntax and provides helpful error messages.
-/// This is a syntax checker, NOT a code executor.
+// Code Syntax Checker Service
+// 
+// Validates code syntax and provides helpful error messages.
+// This is a syntax checker, NOT a code executor.
 
 class CodeExecutorService {
   Future<String> execute(String code, String language) async {
@@ -113,9 +113,9 @@ class CodeExecutorService {
       }
     }
     
-    if (parens > 0) errors.add('Missing ) - ${parens} unclosed parenthesis');
-    if (brackets > 0) errors.add('Missing ] - ${brackets} unclosed bracket');
-    if (braces > 0) errors.add('Missing } - ${braces} unclosed brace');
+    if (parens > 0) errors.add('Missing ) - $parens unclosed parenthesis');
+    if (brackets > 0) errors.add('Missing ] - $brackets unclosed bracket');
+    if (braces > 0) errors.add('Missing } - $braces unclosed brace');
     
     return errors;
   }
@@ -149,13 +149,6 @@ class CodeExecutorService {
     }
     
     return errors;
-  }
-  
-  bool _isKeyword(String word) {
-    const keywords = ['print', 'input', 'float', 'return', 'while', 'break', 
-      'class', 'function', 'const', 'import', 'from', 'async', 'await',
-      'public', 'private', 'static', 'void', 'String', 'result', 'number'];
-    return keywords.contains(word.toLowerCase());
   }
   
   List<String> _checkPython(String code) {

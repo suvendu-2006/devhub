@@ -1,7 +1,7 @@
-/// AI Feedback Service
-/// 
-/// This service analyzes code and provides GUIDED feedback,
-/// NOT direct solutions. The goal is to enhance thinking capacity.
+// AI Feedback Service
+// 
+// This service analyzes code and provides GUIDED feedback,
+// NOT direct solutions. The goal is to enhance thinking capacity.
 
 class AIFeedbackService {
   /// Analyzes code and provides educational guidance

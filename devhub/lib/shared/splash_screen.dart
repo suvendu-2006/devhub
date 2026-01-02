@@ -238,7 +238,7 @@ class _EnergyLinesPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2;
     
-    final lineCount = 12;
+    const lineCount = 12;
     final maxLength = size.width * 0.6;
     
     for (int i = 0; i < lineCount; i++) {
@@ -249,7 +249,7 @@ class _EnergyLinesPainter extends CustomPainter {
       
       paint.color = (i % 2 == 0 ? color : const Color(0xFF00D9FF)).withOpacity(opacity);
       
-      final startOffset = 60.0;
+      const startOffset = 60.0;
       final start = Offset(
         center.dx + startOffset * (1 - lineProgress) * cos(angle),
         center.dy + startOffset * (1 - lineProgress) * sin(angle),

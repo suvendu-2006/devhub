@@ -294,7 +294,6 @@ class _CodeEditorScreenState extends State<CodeEditorScreen> {
 
   Widget _buildOutputPanel() {
     final hasError = _output.contains('❌');
-    final hasSuccess = _output.contains('✅');
     
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
