@@ -35,7 +35,21 @@ class _AppNavigationState extends State<AppNavigation> {
               child: const Icon(Icons.code, size: 18, color: Colors.white),
             ),
             const SizedBox(width: 10),
-            const Text('DevHub'),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text('DevHub', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                Text(
+                  'Created by Subh & Antigravity',
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w400,
+                    color: isDark ? Colors.white70 : Colors.black54,
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
         actions: [
