@@ -1,0 +1,27 @@
+# Flutter SDK - exclude from repository
+/flutter/
+
+# Only track the devhub project
+# Build artifacts
+devhub/build/
+devhub/.dart_tool/
+devhub/.flutter-plugins
+devhub/.flutter-plugins-dependencies
+devhub/.pub-cache/
+devhub/.pub/
+devhub/*.iml
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
