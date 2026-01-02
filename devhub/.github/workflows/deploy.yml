@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches: [ main, master ]
   workflow_dispatch:
 
 permissions:
@@ -20,8 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.24.0'
           channel: 'stable'
@@ -30,15 +29,12 @@ jobs:
         run: flutter pub get
       
       - name: Build web
-        run: flutter build web --release --web-renderer html --base-href "/devhub/"
-      
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
+        run: flutter build web --release --base-href "/devhub/"
       
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'build/web'
+          path: build/web
 
   deploy:
     environment:
