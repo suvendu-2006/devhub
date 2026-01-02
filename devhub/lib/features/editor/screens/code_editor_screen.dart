@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../core/theme/app_theme.dart';
 import '../services/ai_feedback_service.dart';
 import '../services/code_executor_service.dart';
@@ -107,9 +108,13 @@ class _CodeEditorScreenState extends State<CodeEditorScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = context.watch<ThemeProvider>();
+    final isDark = themeProvider.isDarkMode;
+    
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: isDark ? AppTheme.backgroundColor : AppTheme.lightBackground,
       appBar: AppBar(
+        backgroundColor: isDark ? AppTheme.backgroundColor : Colors.white,
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -119,10 +124,10 @@ class _CodeEditorScreenState extends State<CodeEditorScreen> {
                 gradient: AppTheme.primaryGradient,
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Icon(Icons.code, size: 20),
+              child: const Icon(Icons.code, size: 20, color: Colors.white),
             ),
             const SizedBox(width: 12),
-            const Text('Code Editor'),
+            Text('Code Editor', style: TextStyle(color: isDark ? AppTheme.textPrimary : AppTheme.lightTextPrimary)),
           ],
         ),
         actions: [
@@ -130,15 +135,15 @@ class _CodeEditorScreenState extends State<CodeEditorScreen> {
             margin: const EdgeInsets.only(right: 12),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             decoration: BoxDecoration(
-              color: AppTheme.surfaceColor,
+              color: isDark ? AppTheme.surfaceColor : Colors.white,
               borderRadius: BorderRadius.circular(8),
               border: Border.all(color: AppTheme.primaryColor.withOpacity(0.3)),
             ),
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(
                 value: _selectedLanguage,
-                dropdownColor: AppTheme.cardColor,
-                style: const TextStyle(color: AppTheme.textPrimary, fontSize: 14),
+                dropdownColor: isDark ? AppTheme.cardColor : Colors.white,
+                style: TextStyle(color: isDark ? AppTheme.textPrimary : AppTheme.lightTextPrimary, fontSize: 14),
                 icon: Icon(Icons.arrow_drop_down, color: AppTheme.primaryColor),
                 items: _languages.map((lang) => DropdownMenuItem(
                   value: lang,
@@ -167,9 +172,9 @@ class _CodeEditorScreenState extends State<CodeEditorScreen> {
             child: Container(
               margin: const EdgeInsets.fromLTRB(12, 8, 12, 8),
               decoration: BoxDecoration(
-                color: const Color(0xFF1E1E2E),
+                color: isDark ? const Color(0xFF1E1E2E) : Colors.white,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppTheme.cardColor),
+                border: Border.all(color: isDark ? AppTheme.cardColor : Colors.grey.shade300),
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
@@ -179,8 +184,8 @@ class _CodeEditorScreenState extends State<CodeEditorScreen> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       decoration: BoxDecoration(
-                        color: AppTheme.surfaceColor,
-                        border: Border(bottom: BorderSide(color: AppTheme.cardColor)),
+                        color: isDark ? AppTheme.surfaceColor : Colors.grey.shade100,
+                        border: Border(bottom: BorderSide(color: isDark ? AppTheme.cardColor : Colors.grey.shade300)),
                       ),
                       child: Row(
                         children: [
@@ -190,7 +195,7 @@ class _CodeEditorScreenState extends State<CodeEditorScreen> {
                           const SizedBox(width: 6),
                           Container(width: 10, height: 10, decoration: BoxDecoration(color: Colors.green.shade400, shape: BoxShape.circle)),
                           const Spacer(),
-                          Text('main.${_getFileExtension(_selectedLanguage)}', style: TextStyle(color: AppTheme.textMuted, fontSize: 12)),
+                          Text('main.${_getFileExtension(_selectedLanguage)}', style: TextStyle(color: isDark ? AppTheme.textMuted : AppTheme.lightTextSecondary, fontSize: 12)),
                         ],
                       ),
                     ),
@@ -200,17 +205,19 @@ class _CodeEditorScreenState extends State<CodeEditorScreen> {
                         controller: _codeController,
                         maxLines: null,
                         expands: true,
-                        style: const TextStyle(
-                          color: Color(0xFFE0E0E0),
+                        style: TextStyle(
+                          color: isDark ? const Color(0xFFE0E0E0) : const Color(0xFF1E1E2E),
                           fontSize: 14,
                           fontFamily: 'monospace',
                           height: 1.5,
                         ),
-                        decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.all(16),
+                        decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.all(16),
                           border: InputBorder.none,
+                          fillColor: isDark ? const Color(0xFF1E1E2E) : Colors.white,
+                          filled: true,
                           hintText: 'Write your code here...',
-                          hintStyle: TextStyle(color: Color(0xFF5C5C5C)),
+                          hintStyle: TextStyle(color: isDark ? const Color(0xFF5C5C5C) : Colors.grey.shade400),
                         ),
                       ),
                     ),
@@ -266,13 +273,13 @@ class _CodeEditorScreenState extends State<CodeEditorScreen> {
             child: Container(
               margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
               decoration: BoxDecoration(
-                color: AppTheme.surfaceColor,
+                color: isDark ? AppTheme.surfaceColor : Colors.white,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppTheme.cardColor),
+                border: Border.all(color: isDark ? AppTheme.cardColor : Colors.grey.shade300),
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
-                child: _showOutput ? _buildOutputPanel() : _buildAIPanel(),
+                child: _showOutput ? _buildOutputPanel(isDark) : _buildAIPanel(isDark),
               ),
             ),
           ),
@@ -292,7 +299,7 @@ class _CodeEditorScreenState extends State<CodeEditorScreen> {
     }
   }
 
-  Widget _buildOutputPanel() {
+  Widget _buildOutputPanel(bool isDark) {
     final hasError = _output.contains('❌');
     
     return Column(
@@ -300,7 +307,7 @@ class _CodeEditorScreenState extends State<CodeEditorScreen> {
       children: [
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: AppTheme.cardColor))),
+          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: isDark ? AppTheme.cardColor : Colors.grey.shade300))),
           child: Row(
             children: [
               Icon(
@@ -311,7 +318,7 @@ class _CodeEditorScreenState extends State<CodeEditorScreen> {
               const SizedBox(width: 8),
               Text(
                 'Syntax Checker',
-                style: TextStyle(color: AppTheme.textPrimary, fontWeight: FontWeight.w600, fontSize: 13),
+                style: TextStyle(color: isDark ? AppTheme.textPrimary : AppTheme.lightTextPrimary, fontWeight: FontWeight.w600, fontSize: 13),
               ),
               const Spacer(),
               Container(
@@ -338,7 +345,7 @@ class _CodeEditorScreenState extends State<CodeEditorScreen> {
             child: SelectableText(
               _output.isEmpty ? 'Click "Check Syntax" to validate your code' : _output,
               style: TextStyle(
-                color: hasError ? AppTheme.errorColor : _output.isEmpty ? AppTheme.textMuted : AppTheme.textPrimary,
+                color: hasError ? AppTheme.errorColor : _output.isEmpty ? (isDark ? AppTheme.textMuted : AppTheme.lightTextSecondary) : (isDark ? AppTheme.textPrimary : AppTheme.lightTextPrimary),
                 fontFamily: 'monospace',
                 fontSize: 13,
                 height: 1.5,
@@ -350,7 +357,7 @@ class _CodeEditorScreenState extends State<CodeEditorScreen> {
     );
   }
 
-  Widget _buildAIPanel() {
+  Widget _buildAIPanel(bool isDark) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -358,13 +365,13 @@ class _CodeEditorScreenState extends State<CodeEditorScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           decoration: BoxDecoration(
             gradient: LinearGradient(colors: [AppTheme.primaryColor.withOpacity(0.15), Colors.transparent]),
-            border: Border(bottom: BorderSide(color: AppTheme.cardColor)),
+            border: Border(bottom: BorderSide(color: isDark ? AppTheme.cardColor : Colors.grey.shade300)),
           ),
           child: Row(
             children: [
               Icon(Icons.lightbulb_outline, color: AppTheme.primaryColor, size: 16),
               const SizedBox(width: 8),
-              Text('AI Learning Tips', style: TextStyle(color: AppTheme.textPrimary, fontWeight: FontWeight.w600, fontSize: 13)),
+              Text('AI Learning Tips', style: TextStyle(color: isDark ? AppTheme.textPrimary : AppTheme.lightTextPrimary, fontWeight: FontWeight.w600, fontSize: 13)),
               if (_isAnalyzing) ...[
                 const Spacer(),
                 SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2, color: AppTheme.primaryColor)),
@@ -378,7 +385,7 @@ class _CodeEditorScreenState extends State<CodeEditorScreen> {
             child: SelectableText(
               _aiFeedback.isEmpty ? 'Click "AI Tips" to get learning suggestions' : _aiFeedback,
               style: TextStyle(
-                color: _aiFeedback.isEmpty ? AppTheme.textMuted : AppTheme.textSecondary,
+                color: _aiFeedback.isEmpty ? (isDark ? AppTheme.textMuted : AppTheme.lightTextSecondary) : (isDark ? AppTheme.textSecondary : AppTheme.lightTextPrimary),
                 fontSize: 13,
                 height: 1.6,
               ),
