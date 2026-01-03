@@ -18,19 +18,34 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  <meta name="description" content="DevHub - Your AI Learning Hub">
+  
+  <!-- Mobile viewport for better performance -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  
+  <!-- Request high refresh rate on mobile -->
+  <meta name="mobile-web-app-capable" content="yes">
 
   <!-- iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="devhub">
+  <meta name="apple-mobile-web-app-title" content="DevHub">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>devhub</title>
+  <title>DevHub</title>
   <link rel="manifest" href="manifest.json">
+  
+  <style>
+    /* Ensure smooth scrolling and 60/120fps animations */
+    html, body {
+      touch-action: pan-y;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: none;
+    }
+  </style>
 </head>
 <body>
   <script src="flutter_bootstrap.js" async></script>
