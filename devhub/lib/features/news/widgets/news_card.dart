@@ -174,22 +174,42 @@ class NewsCard extends StatelessWidget {
   }
 
   Widget _buildGradientPlaceholder(bool isDark) {
-    final gradients = {
-      'ai': [const Color(0xFF6C63FF), const Color(0xFF00D9FF)],
-      'startup': [const Color(0xFF10B981), const Color(0xFF34D399)],
-      'industry': [const Color(0xFFF59E0B), const Color(0xFFFBBF24)],
-      'tech': [const Color(0xFF6366F1), const Color(0xFF8B5CF6)],
-    };
+    // Multiple gradient options for variety on refresh
+    final allGradients = [
+      [const Color(0xFF6C63FF), const Color(0xFF00D9FF)], // Purple-Cyan
+      [const Color(0xFF10B981), const Color(0xFF34D399)], // Green
+      [const Color(0xFFF59E0B), const Color(0xFFFBBF24)], // Amber
+      [const Color(0xFF6366F1), const Color(0xFF8B5CF6)], // Indigo-Purple
+      [const Color(0xFFEC4899), const Color(0xFFF472B6)], // Pink
+      [const Color(0xFFEF4444), const Color(0xFFF97316)], // Red-Orange
+      [const Color(0xFF0EA5E9), const Color(0xFF38BDF8)], // Sky Blue
+      [const Color(0xFF14B8A6), const Color(0xFF2DD4BF)], // Teal
+      [const Color(0xFF8B5CF6), const Color(0xFFC084FC)], // Violet
+      [const Color(0xFF22C55E), const Color(0xFF86EFAC)], // Emerald
+    ];
     
-    final category = article.imageUrl ?? 'tech';
-    final colors = gradients[category] ?? gradients['tech']!;
+    final allIcons = [
+      Icons.psychology,
+      Icons.rocket_launch,
+      Icons.code,
+      Icons.lightbulb,
+      Icons.auto_awesome,
+      Icons.memory,
+      Icons.science,
+      Icons.trending_up,
+      Icons.cloud,
+      Icons.terminal,
+      Icons.insights,
+      Icons.hub,
+    ];
     
-    final icons = {
-      'ai': Icons.psychology,
-      'startup': Icons.rocket_launch,
-      'industry': Icons.business,
-      'tech': Icons.code,
-    };
+    // Use article ID hash for consistent but different images per article
+    final hash = article.id.hashCode.abs();
+    final gradientIndex = hash % allGradients.length;
+    final iconIndex = (hash ~/ 10) % allIcons.length;
+    
+    final colors = allGradients[gradientIndex];
+    final icon = allIcons[iconIndex];
     
     return Container(
       height: 120,
@@ -200,12 +220,27 @@ class NewsCard extends StatelessWidget {
           end: Alignment.bottomRight,
         ),
       ),
-      child: Center(
-        child: Icon(
-          icons[category] ?? Icons.article,
-          size: 40,
-          color: Colors.white.withOpacity(0.5),
-        ),
+      child: Stack(
+        children: [
+          // Background pattern
+          Positioned(
+            right: -20,
+            bottom: -20,
+            child: Icon(
+              icon,
+              size: 120,
+              color: Colors.white.withOpacity(0.1),
+            ),
+          ),
+          // Main icon
+          Center(
+            child: Icon(
+              icon,
+              size: 40,
+              color: Colors.white.withOpacity(0.7),
+            ),
+          ),
+        ],
       ),
     );
   }
