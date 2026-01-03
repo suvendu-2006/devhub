@@ -258,9 +258,9 @@ class _CodeEditorScreenState extends State<CodeEditorScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Row(
               children: [
-                _TabButton(label: 'Syntax Check', isSelected: _showOutput, onTap: () => setState(() => _showOutput = true)),
+                _TabButton(label: 'Syntax Check', isSelected: _showOutput, onTap: () => setState(() => _showOutput = true), isDark: isDark),
                 const SizedBox(width: 8),
-                _TabButton(label: 'AI Tips', isSelected: !_showOutput, onTap: () => setState(() => _showOutput = false)),
+                _TabButton(label: 'AI Tips', isSelected: !_showOutput, onTap: () => setState(() => _showOutput = false), isDark: isDark),
               ],
             ),
           ),
@@ -449,8 +449,9 @@ class _TabButton extends StatelessWidget {
   final String label;
   final bool isSelected;
   final VoidCallback onTap;
+  final bool isDark;
 
-  const _TabButton({required this.label, required this.isSelected, required this.onTap});
+  const _TabButton({required this.label, required this.isSelected, required this.onTap, required this.isDark});
 
   @override
   Widget build(BuildContext context) {
@@ -463,12 +464,22 @@ class _TabButton extends StatelessWidget {
           decoration: BoxDecoration(
             color: isSelected ? AppTheme.primaryColor.withOpacity(0.2) : Colors.transparent,
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: isSelected ? AppTheme.primaryColor : AppTheme.cardColor),
+            border: Border.all(
+              color: isSelected 
+                  ? AppTheme.primaryColor 
+                  : (isDark ? AppTheme.cardColor : Colors.grey.shade400),
+            ),
           ),
           child: Text(
             label,
             textAlign: TextAlign.center,
-            style: TextStyle(color: isSelected ? AppTheme.primaryColor : AppTheme.textMuted, fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal, fontSize: 12),
+            style: TextStyle(
+              color: isSelected 
+                  ? AppTheme.primaryColor 
+                  : (isDark ? AppTheme.textMuted : AppTheme.lightTextSecondary),
+              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal, 
+              fontSize: 12,
+            ),
           ),
         ),
       ),

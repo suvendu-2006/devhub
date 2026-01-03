@@ -157,7 +157,8 @@ class ThemeProvider extends ChangeNotifier {
   static const Color lightBackground = Color(0xFFF5F7FA);
   static const Color lightSecondary = Color(0xFF00B4D8);
   static const Color lightTextPrimary = Color(0xFF1A1A24);
-  static const Color lightTextSecondary = Color(0xFF6B6B7B);
+  static const Color lightTextSecondary = Color(0xFF4A4A5A); // Darker for better contrast
+  static const Color lightTextMuted = Color(0xFF5A5A6A); // New: for badges/chips
   static const Color lightError = Color(0xFFE53935);
 }
 
@@ -177,9 +178,10 @@ class AppTheme {
   // Light theme colors
   static const Color lightBackground = Color(0xFFF5F7FA);
   static const Color lightTextPrimary = Color(0xFF1A1A24);
-  static const Color lightTextSecondary = Color(0xFF6B6B7B);
+  static const Color lightTextSecondary = Color(0xFF4A4A5A); // Darker for better contrast
+  static const Color lightTextMuted = Color(0xFF5A5A6A); // For badges/chips
   static const Color lightCardColor = Colors.white;
-  static const Color lightSurfaceColor = Color(0xFFF0F0F5);
+  static const Color lightSurfaceColor = Color(0xFFE8E8EE); // Slightly darker for better badge visibility
 
   static const LinearGradient primaryGradient = LinearGradient(
     colors: [Color(0xFF6C63FF), Color(0xFF5A52E0)],

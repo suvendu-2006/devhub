@@ -162,15 +162,15 @@ class CourseCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: isDark ? AppTheme.surfaceColor : Colors.grey.shade100,
+        color: isDark ? AppTheme.surfaceColor : const Color(0xFFE0E0E8), // Darker for light mode
         borderRadius: BorderRadius.circular(6),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 12, color: isDark ? AppTheme.textMuted : AppTheme.lightTextSecondary),
+          Icon(icon, size: 12, color: isDark ? AppTheme.textMuted : const Color(0xFF4A4A5A)),
           const SizedBox(width: 4),
-          Text(text, style: TextStyle(color: isDark ? AppTheme.textMuted : AppTheme.lightTextSecondary, fontSize: 10)),
+          Text(text, style: TextStyle(color: isDark ? AppTheme.textMuted : const Color(0xFF4A4A5A), fontSize: 10, fontWeight: FontWeight.w500)),
         ],
       ),
     );
