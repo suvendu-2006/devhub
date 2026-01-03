@@ -115,14 +115,14 @@ class ThemeProvider extends ChangeNotifier {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: const Color(0xFFF0F0F5),
+        fillColor: const Color(0xFFE8E8F0),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-        hintStyle: const TextStyle(color: Color(0xFF9E9E9E)),
+        hintStyle: const TextStyle(color: Color(0xFF5A5A6A)), // Much darker hint text
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         backgroundColor: Colors.white,
         selectedItemColor: primaryColor,
-        unselectedItemColor: Color(0xFF9E9E9E),
+        unselectedItemColor: Color(0xFF5A5A6A), // Darker unselected
       ),
       tabBarTheme: const TabBarTheme(
         indicatorColor: primaryColor,
@@ -153,12 +153,12 @@ class ThemeProvider extends ChangeNotifier {
   static const Color errorColor = Color(0xFFFF6B6B);
   static const Color warningColor = Color(0xFFFBBF24);
   
-  // Light theme colors
+  // Light theme colors - WCAG compliant
   static const Color lightBackground = Color(0xFFF5F7FA);
   static const Color lightSecondary = Color(0xFF00B4D8);
   static const Color lightTextPrimary = Color(0xFF1A1A24);
-  static const Color lightTextSecondary = Color(0xFF4A4A5A); // Darker for better contrast
-  static const Color lightTextMuted = Color(0xFF5A5A6A); // New: for badges/chips
+  static const Color lightTextSecondary = Color(0xFF3A3A4A); // Very dark for good readability
+  static const Color lightTextMuted = Color(0xFF4A4A5A); // Dark for badges/chips
   static const Color lightError = Color(0xFFE53935);
 }
 
@@ -175,13 +175,13 @@ class AppTheme {
   static const Color errorColor = Color(0xFFFF6B6B);
   static const Color warningColor = Color(0xFFFBBF24);
   
-  // Light theme colors
+  // Light theme colors - WCAG compliant contrast
   static const Color lightBackground = Color(0xFFF5F7FA);
   static const Color lightTextPrimary = Color(0xFF1A1A24);
-  static const Color lightTextSecondary = Color(0xFF4A4A5A); // Darker for better contrast
-  static const Color lightTextMuted = Color(0xFF5A5A6A); // For badges/chips
+  static const Color lightTextSecondary = Color(0xFF3A3A4A); // Very dark for good readability
+  static const Color lightTextMuted = Color(0xFF4A4A5A); // Dark for badges/chips
   static const Color lightCardColor = Colors.white;
-  static const Color lightSurfaceColor = Color(0xFFE8E8EE); // Slightly darker for better badge visibility
+  static const Color lightSurfaceColor = Color(0xFFE0E0E8); // Visible badge backgrounds
 
   static const LinearGradient primaryGradient = LinearGradient(
     colors: [Color(0xFF6C63FF), Color(0xFF5A52E0)],

@@ -127,14 +127,18 @@ class _NewsScreenState extends State<NewsScreen> {
                           gradient: isSelected ? AppTheme.primaryGradient : null,
                           color: isSelected ? null : (isDark ? AppTheme.surfaceColor : Colors.white),
                           borderRadius: BorderRadius.circular(17),
+                          border: isSelected ? null : Border.all(
+                            color: isDark ? Colors.transparent : Colors.grey.shade400,
+                            width: 1,
+                          ),
                         ),
                         alignment: Alignment.center,
                         child: Text(
                           category,
                           style: TextStyle(
-                            color: isSelected ? Colors.white : (isDark ? AppTheme.textSecondary : AppTheme.lightTextSecondary),
+                            color: isSelected ? Colors.white : (isDark ? AppTheme.textSecondary : const Color(0xFF3A3A4A)),
                             fontSize: 12,
-                            fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                           ),
                         ),
                       ),
