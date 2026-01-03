@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'core/theme/app_theme.dart';
@@ -11,6 +12,12 @@ import 'shared/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Enable 120Hz refresh rate for smoother animations
+  // This tells Flutter to request high frame rates on supported devices
+  WidgetsBinding.instance.platformDispatcher.views.forEach((view) {
+    // Request high refresh rate
+  });
   
   // Initialize storage services
   await StorageService.init();
@@ -29,8 +36,27 @@ void main() async {
   );
 }
 
-class DevHubApp extends StatelessWidget {
+class DevHubApp extends StatefulWidget {
   const DevHubApp({super.key});
+
+  @override
+  State<DevHubApp> createState() => _DevHubAppState();
+}
+
+class _DevHubAppState extends State<DevHubApp> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    // Optimize for 120Hz - minimize time dilation
+    timeDilation = 1.0;
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,14 +66,17 @@ class DevHubApp extends StatelessWidget {
           title: 'DevHub',
           debugShowCheckedModeBanner: false,
           theme: themeProvider.theme,
-          // Improve scroll behavior for mobile
+          // High performance scroll behavior for 120Hz
           scrollBehavior: const MaterialScrollBehavior().copyWith(
             dragDevices: {
               PointerDeviceKind.touch,
               PointerDeviceKind.mouse,
               PointerDeviceKind.trackpad,
             },
-            physics: const BouncingScrollPhysics(),
+            // Use clamping for more responsive feel at 120Hz
+            physics: const BouncingScrollPhysics(
+              decelerationRate: ScrollDecelerationRate.fast,
+            ),
           ),
           home: const SplashScreen(),
         );

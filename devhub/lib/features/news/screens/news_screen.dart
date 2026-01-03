@@ -81,7 +81,7 @@ class _NewsScreenState extends State<NewsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text('Tech News', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: isDark ? AppTheme.textPrimary : AppTheme.lightTextPrimary)),
-                      Text('Live from HackerNews • Tap to read', style: TextStyle(color: isDark ? AppTheme.textMuted : AppTheme.lightTextSecondary, fontSize: 11)),
+                      Text('Trusted: HackerNews • Dev.to', style: TextStyle(color: isDark ? AppTheme.textMuted : AppTheme.lightTextSecondary, fontSize: 11)),
                     ],
                   ),
                   const Spacer(),
