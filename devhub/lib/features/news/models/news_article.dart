@@ -3,11 +3,12 @@ class NewsArticle {
   final String title;
   final String summary;
   final String source;
-  final String sourceLogo;
+  final String? sourceLogo;
   final String category;
   final String? imageUrl;
   final String url;
-  final DateTime publishedAt;
+  final DateTime? publishedAt;
+  final String? publishedAtString;
   final bool isBreaking;
 
   NewsArticle({
@@ -15,17 +16,22 @@ class NewsArticle {
     required this.title,
     required this.summary,
     required this.source,
-    required this.sourceLogo,
+    this.sourceLogo,
     required this.category,
     this.imageUrl,
     required this.url,
-    required this.publishedAt,
+    this.publishedAt,
+    this.publishedAtString,
     this.isBreaking = false,
   });
 
   String get timeAgo {
+    if (publishedAtString != null) return publishedAtString!;
+    
+    if (publishedAt == null) return 'Recently';
+    
     final now = DateTime.now();
-    final difference = now.difference(publishedAt);
+    final difference = now.difference(publishedAt!);
     
     if (difference.inMinutes < 60) {
       return '${difference.inMinutes}m ago';

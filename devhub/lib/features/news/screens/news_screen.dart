@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/skeleton_loader.dart';
+import '../../../shared/widgets/empty_state.dart';
 import '../models/news_article.dart';
 import '../services/news_service.dart';
 import '../widgets/news_card.dart';
@@ -17,6 +19,7 @@ class _NewsScreenState extends State<NewsScreen> {
   String _selectedCategory = 'All';
   List<NewsArticle> _articles = [];
   bool _isLoading = true;
+  bool _hasError = false;
   
   final List<String> _categories = ['All', 'AI Research', 'Industry', 'Startups'];
 
@@ -27,17 +30,29 @@ class _NewsScreenState extends State<NewsScreen> {
   }
 
   Future<void> _loadNews() async {
-    setState(() => _isLoading = true);
+    setState(() {
+      _isLoading = true;
+      _hasError = false;
+    });
     
-    final articles = await _newsService.fetchNews(
-      category: _selectedCategory == 'All' ? null : _selectedCategory,
-    );
-    
-    if (mounted) {
-      setState(() {
-        _articles = articles;
-        _isLoading = false;
-      });
+    try {
+      final articles = await _newsService.fetchNews(
+        category: _selectedCategory == 'All' ? null : _selectedCategory,
+      );
+      
+      if (mounted) {
+        setState(() {
+          _articles = articles;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _hasError = true;
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -65,13 +80,13 @@ class _NewsScreenState extends State<NewsScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('AI News', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: isDark ? AppTheme.textPrimary : AppTheme.lightTextPrimary)),
-                      Text('Trusted sources • Tap to read', style: TextStyle(color: isDark ? AppTheme.textMuted : AppTheme.lightTextSecondary, fontSize: 11)),
+                      Text('Tech News', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: isDark ? AppTheme.textPrimary : AppTheme.lightTextPrimary)),
+                      Text('Live from HackerNews • Tap to read', style: TextStyle(color: isDark ? AppTheme.textMuted : AppTheme.lightTextSecondary, fontSize: 11)),
                     ],
                   ),
                   const Spacer(),
                   GestureDetector(
-                    onTap: _loadNews,
+                    onTap: _isLoading ? null : _loadNews,
                     child: Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
@@ -87,7 +102,7 @@ class _NewsScreenState extends State<NewsScreen> {
               ),
             ),
             
-            // Category filter - simple, no animations
+            // Category filter
             SizedBox(
               height: 34,
               child: ListView.builder(
@@ -105,7 +120,8 @@ class _NewsScreenState extends State<NewsScreen> {
                         setState(() => _selectedCategory = category);
                         _loadNews();
                       },
-                      child: Container(
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
                         padding: const EdgeInsets.symmetric(horizontal: 14),
                         decoration: BoxDecoration(
                           gradient: isSelected ? AppTheme.primaryGradient : null,
@@ -132,17 +148,50 @@ class _NewsScreenState extends State<NewsScreen> {
             
             // News list
             Expanded(
-              child: _isLoading
-                  ? const Center(child: CircularProgressIndicator(color: AppTheme.primaryColor))
-                  : ListView.builder(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      physics: const ClampingScrollPhysics(),
-                      itemCount: _articles.length,
-                      itemBuilder: (context, index) => NewsCard(article: _articles[index]),
-                    ),
+              child: _buildContent(isDark),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildContent(bool isDark) {
+    if (_isLoading) {
+      return ListView.builder(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        physics: const ClampingScrollPhysics(),
+        itemCount: 4,
+        itemBuilder: (context, index) => NewsCardSkeleton(isDark: isDark),
+      );
+    }
+    
+    if (_hasError) {
+      return NoNewsFound(isDark: isDark, onRefresh: _loadNews);
+    }
+    
+    if (_articles.isEmpty) {
+      return EmptyState(
+        icon: Icons.search_off,
+        title: 'No Articles Found',
+        message: 'No articles match the "$_selectedCategory" category.\nTry selecting a different filter.',
+        actionLabel: 'Show All',
+        onAction: () {
+          setState(() => _selectedCategory = 'All');
+          _loadNews();
+        },
+        isDark: isDark,
+      );
+    }
+    
+    return RefreshIndicator(
+      onRefresh: _loadNews,
+      color: AppTheme.primaryColor,
+      child: ListView.builder(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        physics: const AlwaysScrollableScrollPhysics(parent: ClampingScrollPhysics()),
+        itemCount: _articles.length,
+        itemBuilder: (context, index) => NewsCard(article: _articles[index]),
       ),
     );
   }

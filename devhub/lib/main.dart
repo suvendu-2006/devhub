@@ -3,12 +3,17 @@ import 'package:flutter/gestures.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'core/theme/app_theme.dart';
+import 'core/services/storage_service.dart';
+import 'core/services/bookmark_service.dart';
 import 'features/community/services/profile_service.dart';
 import 'features/progress/services/progress_service.dart';
 import 'shared/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize storage services
+  await StorageService.init();
   final prefs = await SharedPreferences.getInstance();
   
   runApp(
@@ -17,6 +22,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => ProfileService(prefs)),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => ProgressService()),
+        ChangeNotifierProvider(create: (_) => BookmarkService()),
       ],
       child: const DevHubApp(),
     ),

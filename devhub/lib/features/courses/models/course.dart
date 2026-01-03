@@ -1,4 +1,5 @@
 class Course {
+  final String id;
   final String title;
   final String provider;
   final String providerLogo;
@@ -10,6 +11,7 @@ class Course {
   final bool isFree;
 
   Course({
+    String? id,
     required this.title,
     required this.provider,
     required this.providerLogo,
@@ -19,5 +21,5 @@ class Course {
     required this.category,
     required this.url,
     required this.isFree,
-  });
+  }) : id = id ?? title.hashCode.toString();
 }

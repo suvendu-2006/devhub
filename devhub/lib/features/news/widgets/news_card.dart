@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/url_helper.dart';
+import '../../../core/services/bookmark_service.dart';
 import '../models/news_article.dart';
 
 class NewsCard extends StatelessWidget {
@@ -13,8 +15,9 @@ class NewsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeProvider = context.watch<ThemeProvider>();
     final isDark = themeProvider.isDarkMode;
+    final bookmarkService = context.watch<BookmarkService>();
+    final isBookmarked = bookmarkService.isArticleBookmarked(article.id);
     
-    // Wrap in RepaintBoundary for better scroll performance
     return RepaintBoundary(
       child: GestureDetector(
         onTap: () => UrlHelper.openUrl(article.url),
@@ -27,32 +30,12 @@ class NewsCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // News Image - simplified, no shadows
+              // News Image
               ClipRRect(
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
                 child: Stack(
                   children: [
-                    Image.network(
-                      article.imageUrl ?? '',
-                      height: 120,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                      // Use cacheWidth for better performance
-                      cacheHeight: 240,
-                      loadingBuilder: (context, child, progress) {
-                        if (progress == null) return child;
-                        return Container(
-                          height: 120,
-                          color: isDark ? AppTheme.surfaceColor : Colors.grey.shade200,
-                          child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
-                        );
-                      },
-                      errorBuilder: (_, __, ___) => Container(
-                        height: 120,
-                        color: isDark ? AppTheme.surfaceColor : Colors.grey.shade200,
-                        child: const Center(child: Icon(Icons.newspaper, size: 32, color: Colors.grey)),
-                      ),
-                    ),
+                    _buildImage(isDark),
                     // Source badge
                     Positioned(
                       top: 8,
@@ -105,7 +88,7 @@ class NewsCard extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 8),
                     Row(
                       children: [
                         Container(
@@ -119,7 +102,36 @@ class NewsCard extends StatelessWidget {
                         const SizedBox(width: 6),
                         Text(article.timeAgo, style: TextStyle(color: isDark ? AppTheme.textMuted : AppTheme.lightTextSecondary, fontSize: 9)),
                         const Spacer(),
-                        Icon(Icons.open_in_new, color: AppTheme.primaryColor, size: 12),
+                        // Bookmark button
+                        GestureDetector(
+                          onTap: () => bookmarkService.toggleArticleBookmark(article.id),
+                          child: Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: isBookmarked 
+                                  ? AppTheme.primaryColor.withOpacity(0.15)
+                                  : Colors.transparent,
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Icon(
+                              isBookmarked ? Icons.bookmark : Icons.bookmark_outline,
+                              color: isBookmarked ? AppTheme.primaryColor : (isDark ? AppTheme.textMuted : AppTheme.lightTextSecondary),
+                              size: 16,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        // Share button
+                        GestureDetector(
+                          onTap: () => _shareArticle(),
+                          child: Icon(
+                            Icons.share_outlined,
+                            color: isDark ? AppTheme.textMuted : AppTheme.lightTextSecondary,
+                            size: 16,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Icon(Icons.open_in_new, color: AppTheme.primaryColor, size: 14),
                       ],
                     ),
                   ],
@@ -129,6 +141,79 @@ class NewsCard extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildImage(bool isDark) {
+    // Check if it's a placeholder image from HackerNews
+    if (article.imageUrl == null || 
+        article.imageUrl == 'ai' || 
+        article.imageUrl == 'startup' || 
+        article.imageUrl == 'industry' || 
+        article.imageUrl == 'tech') {
+      return _buildGradientPlaceholder(isDark);
+    }
+    
+    // Try to load actual image
+    return Image.network(
+      article.imageUrl!,
+      height: 120,
+      width: double.infinity,
+      fit: BoxFit.cover,
+      cacheHeight: 240,
+      loadingBuilder: (context, child, progress) {
+        if (progress == null) return child;
+        return Container(
+          height: 120,
+          color: isDark ? AppTheme.surfaceColor : Colors.grey.shade200,
+          child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+        );
+      },
+      errorBuilder: (_, __, ___) => _buildGradientPlaceholder(isDark),
+    );
+  }
+
+  Widget _buildGradientPlaceholder(bool isDark) {
+    final gradients = {
+      'ai': [const Color(0xFF6C63FF), const Color(0xFF00D9FF)],
+      'startup': [const Color(0xFF10B981), const Color(0xFF34D399)],
+      'industry': [const Color(0xFFF59E0B), const Color(0xFFFBBF24)],
+      'tech': [const Color(0xFF6366F1), const Color(0xFF8B5CF6)],
+    };
+    
+    final category = article.imageUrl ?? 'tech';
+    final colors = gradients[category] ?? gradients['tech']!;
+    
+    final icons = {
+      'ai': Icons.psychology,
+      'startup': Icons.rocket_launch,
+      'industry': Icons.business,
+      'tech': Icons.code,
+    };
+    
+    return Container(
+      height: 120,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: colors,
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+      child: Center(
+        child: Icon(
+          icons[category] ?? Icons.article,
+          size: 40,
+          color: Colors.white.withOpacity(0.5),
+        ),
+      ),
+    );
+  }
+
+  void _shareArticle() {
+    Share.share(
+      '${article.title}\n\nRead more: ${article.url}',
+      subject: article.title,
     );
   }
 }
