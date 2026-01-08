@@ -13,11 +13,7 @@ import 'shared/splash_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Enable 120Hz refresh rate for smoother animations
-  // This tells Flutter to request high frame rates on supported devices
-  WidgetsBinding.instance.platformDispatcher.views.forEach((view) {
-    // Request high refresh rate
-  });
+  // Note: Flutter automatically uses the highest available refresh rate on supported devices
   
   // Initialize storage services
   await StorageService.init();

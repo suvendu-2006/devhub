@@ -190,6 +190,10 @@ class _ProfileRegistrationScreenState extends State<ProfileRegistrationScreen> {
                     if (value == null || value.trim().isEmpty) {
                       return 'Please enter your LinkedIn ID';
                     }
+                    // LinkedIn IDs can contain letters, numbers, hyphens, and underscores
+                    if (!RegExp(r'^[a-zA-Z0-9\-_]{3,100}$').hasMatch(value.trim())) {
+                      return 'Invalid LinkedIn ID (use letters, numbers, - or _)';
+                    }
                     return null;
                   },
                 ),

@@ -41,7 +41,7 @@ class NewsService {
         return allArticles;
       }
     } catch (e) {
-      print('News fetch error, using fallback: $e');
+      // Fallback to mock data if APIs fail
     }
     
     // Fallback to mock data if APIs fail

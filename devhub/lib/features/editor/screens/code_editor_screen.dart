@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../../core/theme/app_theme.dart';
 import '../services/ai_feedback_service.dart';
 import '../services/code_executor_service.dart';
@@ -106,67 +107,106 @@ class _CodeEditorScreenState extends State<CodeEditorScreen> {
     }
   }
 
+  void _shareCode() {
+    final code = _codeController.text.trim();
+    if (code.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('No code to share! Write some code first.'),
+          backgroundColor: AppTheme.warningColor,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+      );
+      return;
+    }
+
+    final shareText = '''📝 $_selectedLanguage Code from DevHub
+
+```$_selectedLanguage
+$code
+```
+
+Shared via DevHub - Learn to Code! 🚀''';
+
+    Share.share(shareText, subject: '$_selectedLanguage Code Snippet');
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeProvider = context.watch<ThemeProvider>();
     final isDark = themeProvider.isDarkMode;
     
-    return Scaffold(
-      backgroundColor: isDark ? AppTheme.backgroundColor : AppTheme.lightBackground,
-      appBar: AppBar(
-        backgroundColor: isDark ? AppTheme.backgroundColor : Colors.white,
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
+    return Container(
+      color: isDark ? AppTheme.backgroundColor : AppTheme.lightBackground,
+      child: SafeArea(
+        child: Column(
           children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                gradient: AppTheme.primaryGradient,
-                borderRadius: BorderRadius.circular(8),
+            // Header with language selector
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      gradient: AppTheme.primaryGradient,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(Icons.code, size: 18, color: Colors.white),
+                  ),
+                  const SizedBox(width: 10),
+                  Text('Code Editor', style: TextStyle(color: isDark ? AppTheme.textPrimary : AppTheme.lightTextPrimary, fontWeight: FontWeight.bold, fontSize: 16)),
+                  const Spacer(),
+                  // Share Button
+                  GestureDetector(
+                    onTap: () => _shareCode(),
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      margin: const EdgeInsets.only(right: 8),
+                      decoration: BoxDecoration(
+                        gradient: AppTheme.primaryGradient,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(Icons.share, size: 18, color: Colors.white),
+                    ),
+                  ),
+                  // Language Selector
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: isDark ? AppTheme.surfaceColor : Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: AppTheme.primaryColor.withOpacity(0.3)),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        value: _selectedLanguage,
+                        dropdownColor: isDark ? AppTheme.cardColor : Colors.white,
+                        style: TextStyle(color: isDark ? AppTheme.textPrimary : AppTheme.lightTextPrimary, fontSize: 13),
+                        icon: Icon(Icons.arrow_drop_down, color: AppTheme.primaryColor, size: 20),
+                        isDense: true,
+                        items: _languages.map((lang) => DropdownMenuItem(
+                          value: lang,
+                          child: Text(lang),
+                        )).toList(),
+                        onChanged: (value) {
+                          if (value != null) {
+                            setState(() {
+                              _selectedLanguage = value;
+                              _codeController.text = _getStarterCode(value);
+                              _output = '';
+                              _aiFeedback = '';
+                            });
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              child: const Icon(Icons.code, size: 20, color: Colors.white),
             ),
-            const SizedBox(width: 12),
-            Text('Code Editor', style: TextStyle(color: isDark ? AppTheme.textPrimary : AppTheme.lightTextPrimary)),
-          ],
-        ),
-        actions: [
-          Container(
-            margin: const EdgeInsets.only(right: 12),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-            decoration: BoxDecoration(
-              color: isDark ? AppTheme.surfaceColor : Colors.white,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: AppTheme.primaryColor.withOpacity(0.3)),
-            ),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                value: _selectedLanguage,
-                dropdownColor: isDark ? AppTheme.cardColor : Colors.white,
-                style: TextStyle(color: isDark ? AppTheme.textPrimary : AppTheme.lightTextPrimary, fontSize: 14),
-                icon: Icon(Icons.arrow_drop_down, color: AppTheme.primaryColor),
-                items: _languages.map((lang) => DropdownMenuItem(
-                  value: lang,
-                  child: Text(lang),
-                )).toList(),
-                onChanged: (value) {
-                  if (value != null) {
-                    setState(() {
-                      _selectedLanguage = value;
-                      _codeController.text = _getStarterCode(value);
-                      _output = '';
-                      _aiFeedback = '';
-                    });
-                  }
-                },
-              ),
-            ),
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          // Code Editor
+            // Code Editor
           Expanded(
             flex: 5,
             child: Container(
@@ -189,12 +229,6 @@ class _CodeEditorScreenState extends State<CodeEditorScreen> {
                       ),
                       child: Row(
                         children: [
-                          Container(width: 10, height: 10, decoration: BoxDecoration(color: Colors.red.shade400, shape: BoxShape.circle)),
-                          const SizedBox(width: 6),
-                          Container(width: 10, height: 10, decoration: BoxDecoration(color: Colors.amber.shade400, shape: BoxShape.circle)),
-                          const SizedBox(width: 6),
-                          Container(width: 10, height: 10, decoration: BoxDecoration(color: Colors.green.shade400, shape: BoxShape.circle)),
-                          const Spacer(),
                           Text('main.${_getFileExtension(_selectedLanguage)}', style: TextStyle(color: isDark ? AppTheme.textMuted : AppTheme.lightTextSecondary, fontSize: 12)),
                         ],
                       ),
@@ -239,13 +273,21 @@ class _CodeEditorScreenState extends State<CodeEditorScreen> {
                   isLoading: _isChecking,
                   onPressed: _isChecking ? null : _checkSyntax,
                 )),
-                const SizedBox(width: 10),
+                const SizedBox(width: 8),
                 Expanded(child: _ActionButton(
                   icon: Icons.auto_awesome,
                   label: _isAnalyzing ? 'Analyzing...' : 'AI Tips',
                   colors: [AppTheme.primaryColor, AppTheme.secondaryColor],
                   isLoading: _isAnalyzing,
                   onPressed: _isAnalyzing ? null : _getAIFeedback,
+                )),
+                const SizedBox(width: 8),
+                Expanded(child: _ActionButton(
+                  icon: Icons.share,
+                  label: 'Share',
+                  colors: [const Color(0xFF3B82F6), const Color(0xFF1D4ED8)],
+                  isLoading: false,
+                  onPressed: _shareCode,
                 )),
               ],
             ),
@@ -283,7 +325,8 @@ class _CodeEditorScreenState extends State<CodeEditorScreen> {
               ),
             ),
           ),
-        ],
+          ],
+        ),
       ),
     );
   }

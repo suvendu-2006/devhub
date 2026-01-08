@@ -8,8 +8,9 @@ class HackerNewsService {
   // Fetch top stories from HackerNews
   Future<List<NewsArticle>> fetchTopStories({int limit = 20}) async {
     try {
-      // Get top story IDs
-      final response = await http.get(Uri.parse('$_baseUrl/topstories.json'));
+      // Get top story IDs with timeout
+      final response = await http.get(Uri.parse('$_baseUrl/topstories.json'))
+          .timeout(const Duration(seconds: 10));
       if (response.statusCode != 200) {
         throw Exception('Failed to fetch stories');
       }
@@ -24,7 +25,7 @@ class HackerNewsService {
       // Filter out nulls and non-story items
       return stories.whereType<NewsArticle>().toList();
     } catch (e) {
-      print('Error fetching HackerNews: $e');
+      // Log error silently in production
       return [];
     }
   }

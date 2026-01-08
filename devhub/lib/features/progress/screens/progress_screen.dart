@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/theme/app_theme.dart';
 import '../models/career_goal.dart';
+import '../models/skill_gap.dart';
 import '../services/progress_service.dart';
 
 class ProgressScreen extends StatefulWidget {
@@ -492,7 +493,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
     );
   }
 
-  Widget _buildSkillGapCard(dynamic gap, bool isDark) {
+  Widget _buildSkillGapCard(SkillGap gap, bool isDark) {
     Color priorityColor;
     if (gap.priority == 1) {
       priorityColor = AppTheme.errorColor;

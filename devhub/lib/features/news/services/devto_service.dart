@@ -19,7 +19,7 @@ class DevToService {
       final response = await http.get(
         Uri.parse(url),
         headers: {'Accept': 'application/json'},
-      );
+      ).timeout(const Duration(seconds: 10));
       
       if (response.statusCode != 200) {
         throw Exception('Failed to fetch Dev.to articles');
@@ -29,7 +29,7 @@ class DevToService {
       
       return data.map((article) => _parseArticle(article)).toList();
     } catch (e) {
-      print('Error fetching Dev.to articles: $e');
+      // Log error silently in production
       return [];
     }
   }
