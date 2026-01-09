@@ -21,7 +21,7 @@ class _NewsScreenState extends State<NewsScreen> {
   bool _isLoading = true;
   bool _hasError = false;
   
-  final List<String> _categories = ['All', 'AI Research', 'Industry', 'Startups'];
+  final List<String> _categories = ['All', 'AI Updates', 'AI Research', 'Industry', 'Startups'];
 
   @override
   void initState() {

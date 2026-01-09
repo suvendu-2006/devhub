@@ -158,19 +158,6 @@ Shared via DevHub - Learn to Code! 🚀''';
                   const SizedBox(width: 10),
                   Text('Code Editor', style: TextStyle(color: isDark ? AppTheme.textPrimary : AppTheme.lightTextPrimary, fontWeight: FontWeight.bold, fontSize: 16)),
                   const Spacer(),
-                  // Share Button
-                  GestureDetector(
-                    onTap: () => _shareCode(),
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      margin: const EdgeInsets.only(right: 8),
-                      decoration: BoxDecoration(
-                        gradient: AppTheme.primaryGradient,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Icon(Icons.share, size: 18, color: Colors.white),
-                    ),
-                  ),
                   // Language Selector
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -206,125 +193,161 @@ Shared via DevHub - Learn to Code! 🚀''';
                 ],
               ),
             ),
-            // Code Editor
-          Expanded(
-            flex: 5,
-            child: Container(
-              margin: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-              decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF1E1E2E) : Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: isDark ? AppTheme.cardColor : Colors.grey.shade300),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Column(
-                  children: [
-                    // Editor header
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            
+            // VS Code Style Layout: Code Editor (left) + Syntax Panel (right)
+            Expanded(
+              child: Row(
+                children: [
+                  // Left: Code Editor
+                  Expanded(
+                    flex: 3,
+                    child: Container(
+                      margin: const EdgeInsets.fromLTRB(12, 0, 6, 8),
                       decoration: BoxDecoration(
-                        color: isDark ? AppTheme.surfaceColor : Colors.grey.shade100,
-                        border: Border(bottom: BorderSide(color: isDark ? AppTheme.cardColor : Colors.grey.shade300)),
+                        color: isDark ? const Color(0xFF1E1E2E) : Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: isDark ? AppTheme.cardColor : Colors.grey.shade300),
                       ),
-                      child: Row(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Column(
+                          children: [
+                            // Editor header
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: isDark ? AppTheme.surfaceColor : Colors.grey.shade100,
+                                border: Border(bottom: BorderSide(color: isDark ? AppTheme.cardColor : Colors.grey.shade300)),
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.description_outlined, size: 14, color: isDark ? AppTheme.textMuted : Colors.grey),
+                                  const SizedBox(width: 6),
+                                  Text('main.${_getFileExtension(_selectedLanguage)}', style: TextStyle(color: isDark ? AppTheme.textMuted : AppTheme.lightTextSecondary, fontSize: 12)),
+                                ],
+                              ),
+                            ),
+                            // Code input
+                            Expanded(
+                              child: TextField(
+                                controller: _codeController,
+                                maxLines: null,
+                                expands: true,
+                                style: TextStyle(
+                                  color: isDark ? const Color(0xFFE0E0E0) : const Color(0xFF1E1E2E),
+                                  fontSize: 14,
+                                  fontFamily: 'monospace',
+                                  height: 1.5,
+                                ),
+                                decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.all(16),
+                                  border: InputBorder.none,
+                                  fillColor: isDark ? const Color(0xFF1E1E2E) : Colors.white,
+                                  filled: true,
+                                  hintText: 'Write your code here...',
+                                  hintStyle: TextStyle(color: isDark ? const Color(0xFF5C5C5C) : Colors.grey.shade400),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  
+                  // Right: Syntax Check Panel (Vertical)
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      margin: const EdgeInsets.fromLTRB(6, 0, 12, 8),
+                      decoration: BoxDecoration(
+                        color: isDark ? AppTheme.surfaceColor : Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: isDark ? AppTheme.cardColor : Colors.grey.shade300),
+                      ),
+                      child: Column(
                         children: [
-                          Text('main.${_getFileExtension(_selectedLanguage)}', style: TextStyle(color: isDark ? AppTheme.textMuted : AppTheme.lightTextSecondary, fontSize: 12)),
+                          // Check Syntax Button
+                          InkWell(
+                            onTap: _isChecking ? null : _checkSyntax,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              decoration: BoxDecoration(
+                                gradient: AppTheme.successGradient,
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(12),
+                                  topRight: Radius.circular(12),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  if (_isChecking)
+                                    const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                                  else
+                                    const Icon(Icons.play_arrow_rounded, color: Colors.white, size: 20),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    _isChecking ? 'Running...' : 'Run Code',
+                                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          // Output Panel
+                          Expanded(child: _buildOutputPanel(isDark)),
                         ],
                       ),
                     ),
-                    // Code input
-                    Expanded(
-                      child: TextField(
-                        controller: _codeController,
-                        maxLines: null,
-                        expands: true,
-                        style: TextStyle(
-                          color: isDark ? const Color(0xFFE0E0E0) : const Color(0xFF1E1E2E),
-                          fontSize: 14,
-                          fontFamily: 'monospace',
-                          height: 1.5,
-                        ),
-                        decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.all(16),
-                          border: InputBorder.none,
-                          fillColor: isDark ? const Color(0xFF1E1E2E) : Colors.white,
-                          filled: true,
-                          hintText: 'Write your code here...',
-                          hintStyle: TextStyle(color: isDark ? const Color(0xFF5C5C5C) : Colors.grey.shade400),
-                        ),
-                      ),
+                  ),
+                ],
+              ),
+            ),
+            
+            // Bottom Action Buttons: AI Tips + Share (Horizontal)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: _ActionButton(
+                      icon: Icons.auto_awesome,
+                      label: _isAnalyzing ? 'Analyzing...' : 'AI Tips',
+                      colors: [AppTheme.primaryColor, AppTheme.secondaryColor],
+                      isLoading: _isAnalyzing,
+                      onPressed: _isAnalyzing ? null : _getAIFeedback,
                     ),
-                  ],
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: _ActionButton(
+                      icon: Icons.share,
+                      label: 'Share Code',
+                      colors: [const Color(0xFF3B82F6), const Color(0xFF1D4ED8)],
+                      isLoading: false,
+                      onPressed: _shareCode,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            
+            // AI Feedback Panel (collapsible)
+            if (_aiFeedback.isNotEmpty || _isAnalyzing)
+              Container(
+                height: 150,
+                margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                decoration: BoxDecoration(
+                  color: isDark ? AppTheme.surfaceColor : Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppTheme.primaryColor.withOpacity(0.3)),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: _buildAIPanel(isDark),
                 ),
               ),
-            ),
-          ),
-          
-          // Action Buttons - UPDATED LABELS
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Row(
-              children: [
-                Expanded(child: _ActionButton(
-                  icon: Icons.check_circle_outline,
-                  label: _isChecking ? 'Checking...' : 'Check Syntax',
-                  colors: [const Color(0xFF10B981), const Color(0xFF059669)],
-                  isLoading: _isChecking,
-                  onPressed: _isChecking ? null : _checkSyntax,
-                )),
-                const SizedBox(width: 8),
-                Expanded(child: _ActionButton(
-                  icon: Icons.auto_awesome,
-                  label: _isAnalyzing ? 'Analyzing...' : 'AI Tips',
-                  colors: [AppTheme.primaryColor, AppTheme.secondaryColor],
-                  isLoading: _isAnalyzing,
-                  onPressed: _isAnalyzing ? null : _getAIFeedback,
-                )),
-                const SizedBox(width: 8),
-                Expanded(child: _ActionButton(
-                  icon: Icons.share,
-                  label: 'Share',
-                  colors: [const Color(0xFF3B82F6), const Color(0xFF1D4ED8)],
-                  isLoading: false,
-                  onPressed: _shareCode,
-                )),
-              ],
-            ),
-          ),
-          
-          const SizedBox(height: 10),
-          
-          // Tab buttons
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Row(
-              children: [
-                _TabButton(label: 'Syntax Check', isSelected: _showOutput, onTap: () => setState(() => _showOutput = true), isDark: isDark),
-                const SizedBox(width: 8),
-                _TabButton(label: 'AI Tips', isSelected: !_showOutput, onTap: () => setState(() => _showOutput = false), isDark: isDark),
-              ],
-            ),
-          ),
-          
-          const SizedBox(height: 8),
-          
-          // Output Panel
-          Expanded(
-            flex: 3,
-            child: Container(
-              margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-              decoration: BoxDecoration(
-                color: isDark ? AppTheme.surfaceColor : Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: isDark ? AppTheme.cardColor : Colors.grey.shade300),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: _showOutput ? _buildOutputPanel(isDark) : _buildAIPanel(isDark),
-              ),
-            ),
-          ),
           ],
         ),
       ),

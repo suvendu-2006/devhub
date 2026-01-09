@@ -20,7 +20,7 @@ class _CoursesScreenState extends State<CoursesScreen> with SingleTickerProvider
   bool _isLoading = true;
   bool _hasError = false;
   
-  final List<String> _categories = ['All', 'ML/AI', 'Programming', 'Data Science', 'Web Dev'];
+  final List<String> _categories = ['All', 'DSA', 'Programming', 'ML/AI', 'Web Dev', 'System Design', 'Database'];
 
   List<Course> _courses = [];
   List<Opportunity> _opportunities = [];
@@ -40,22 +40,41 @@ class _CoursesScreenState extends State<CoursesScreen> with SingleTickerProvider
     
     try {
       _courses = [
-        // Free courses
+        // FREE COURSES
+        // DSA
+        Course(title: 'Data Structures & Algorithms', provider: 'freeCodeCamp', providerLogo: '🔥', description: 'Complete DSA course with practice problems', duration: '20 hours', level: 'Beginner', category: 'DSA', url: 'https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures/', isFree: true),
+        Course(title: 'MIT 6.006: Algorithms', provider: 'MIT OpenCourseWare', providerLogo: '🎓', description: 'Introduction to algorithms from MIT', duration: '14 weeks', level: 'Intermediate', category: 'DSA', url: 'https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/', isFree: true),
+        Course(title: 'Competitive Programming', provider: 'Codeforces', providerLogo: '⚡', description: 'Learn competitive programming techniques', duration: 'Self-paced', level: 'Advanced', category: 'DSA', url: 'https://codeforces.com/', isFree: true),
+        Course(title: 'LeetCode Patterns', provider: 'NeetCode', providerLogo: '📝', description: 'Master coding interview patterns', duration: '10 hours', level: 'Intermediate', category: 'DSA', url: 'https://neetcode.io/', isFree: true),
+        
+        // Programming
         Course(title: 'CS50: Introduction to CS', provider: 'Harvard • edX', providerLogo: '🏛️', description: 'Classic intro to computer science', duration: '12 weeks', level: 'Beginner', category: 'Programming', url: 'https://cs50.harvard.edu/x/', isFree: true),
+        Course(title: 'Python for Everybody', provider: 'University of Michigan', providerLogo: '🐍', description: 'Learn Python from scratch', duration: '8 weeks', level: 'Beginner', category: 'Programming', url: 'https://www.py4e.com/', isFree: true),
+        Course(title: 'Java Programming', provider: 'MOOC.fi', providerLogo: '☕', description: 'Object-oriented programming with Java', duration: '14 weeks', level: 'Beginner', category: 'Programming', url: 'https://java-programming.mooc.fi/', isFree: true),
+        
+        // ML/AI
         Course(title: 'Deep Learning with Python', provider: 'fast.ai', providerLogo: '🚀', description: 'Practical deep learning for coders', duration: '7 weeks', level: 'Intermediate', category: 'ML/AI', url: 'https://www.fast.ai/', isFree: true),
-        Course(title: 'Python for Data Science', provider: 'IBM • edX', providerLogo: '📊', description: 'Master Python for data analysis', duration: '6 weeks', level: 'Beginner', category: 'Data Science', url: 'https://www.edx.org/learn/python', isFree: true),
+        Course(title: 'Machine Learning Basics', provider: 'Google', providerLogo: '🔵', description: 'ML crash course from Google', duration: '15 hours', level: 'Beginner', category: 'ML/AI', url: 'https://developers.google.com/machine-learning/crash-course', isFree: true),
+        
+        // Web Dev
         Course(title: 'Responsive Web Design', provider: 'freeCodeCamp', providerLogo: '🔥', description: 'Learn HTML, CSS, and responsive design', duration: '300 hours', level: 'Beginner', category: 'Web Dev', url: 'https://www.freecodecamp.org/learn/responsive-web-design/', isFree: true),
-        Course(title: 'JavaScript Algorithms', provider: 'freeCodeCamp', providerLogo: '🔥', description: 'Master JavaScript data structures', duration: '300 hours', level: 'Intermediate', category: 'Programming', url: 'https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures/', isFree: true),
         Course(title: 'The Odin Project', provider: 'Odin Project', providerLogo: '⚔️', description: 'Full-stack web development curriculum', duration: 'Self-paced', level: 'Beginner', category: 'Web Dev', url: 'https://www.theodinproject.com/', isFree: true),
-        Course(title: 'MIT 6.006: Algorithms', provider: 'MIT OpenCourseWare', providerLogo: '🎓', description: 'Introduction to algorithms from MIT', duration: '14 weeks', level: 'Intermediate', category: 'Programming', url: 'https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/', isFree: true),
-        Course(title: 'Intro to SQL', provider: 'Khan Academy', providerLogo: '📚', description: 'Learn database querying with SQL', duration: '5 hours', level: 'Beginner', category: 'Data Science', url: 'https://www.khanacademy.org/computing/computer-programming/sql', isFree: true),
-        Course(title: 'Google IT Support', provider: 'Google • Coursera', providerLogo: '🔵', description: 'IT fundamentals and troubleshooting', duration: '6 months', level: 'Beginner', category: 'Programming', url: 'https://www.coursera.org/professional-certificates/google-it-support', isFree: true),
-        Course(title: 'Flask Web Development', provider: 'Corey Schafer', providerLogo: '🐍', description: 'Build web apps with Python Flask', duration: '10 hours', level: 'Intermediate', category: 'Web Dev', url: 'https://www.youtube.com/playlist?list=PL-osiE80TeTs4UjLw5MM6OjgkjFeUxCYH', isFree: true),
         Course(title: 'React Tutorial', provider: 'Scrimba', providerLogo: '⚛️', description: 'Interactive React.js course', duration: '12 hours', level: 'Intermediate', category: 'Web Dev', url: 'https://scrimba.com/learn/learnreact', isFree: true),
-        // Premium courses
+        
+        // System Design
+        Course(title: 'System Design Primer', provider: 'GitHub', providerLogo: '🏗️', description: 'Learn how to design large-scale systems', duration: 'Self-paced', level: 'Intermediate', category: 'System Design', url: 'https://github.com/donnemartin/system-design-primer', isFree: true),
+        Course(title: 'Design Patterns', provider: 'Refactoring Guru', providerLogo: '🧩', description: 'Software design patterns explained', duration: 'Self-paced', level: 'Intermediate', category: 'System Design', url: 'https://refactoring.guru/design-patterns', isFree: true),
+        
+        // Database
+        Course(title: 'Intro to SQL', provider: 'Khan Academy', providerLogo: '📚', description: 'Learn database querying with SQL', duration: '5 hours', level: 'Beginner', category: 'Database', url: 'https://www.khanacademy.org/computing/computer-programming/sql', isFree: true),
+        Course(title: 'MongoDB University', provider: 'MongoDB', providerLogo: '🍃', description: 'NoSQL database fundamentals', duration: '8 weeks', level: 'Beginner', category: 'Database', url: 'https://university.mongodb.com/', isFree: true),
+        
+        // PREMIUM COURSES
         Course(title: 'Machine Learning Specialization', provider: 'Stanford • Coursera', providerLogo: '🎓', description: 'Learn ML fundamentals from Andrew Ng', duration: '3 months', level: 'Beginner', category: 'ML/AI', url: 'https://www.coursera.org/specializations/machine-learning-introduction', isFree: false),
         Course(title: 'Full Stack Web Development', provider: 'Meta • Coursera', providerLogo: '🌐', description: 'Build modern web applications', duration: '4 months', level: 'Intermediate', category: 'Web Dev', url: 'https://www.coursera.org/professional-certificates/meta-front-end-developer', isFree: false),
-        Course(title: 'Natural Language Processing', provider: 'DeepLearning.AI', providerLogo: '🧠', description: 'NLP with attention models', duration: '4 weeks', level: 'Advanced', category: 'ML/AI', url: 'https://www.deeplearning.ai/courses/natural-language-processing-specialization/', isFree: false),
+        Course(title: 'NLP Specialization', provider: 'DeepLearning.AI', providerLogo: '🧠', description: 'NLP with attention models', duration: '4 weeks', level: 'Advanced', category: 'ML/AI', url: 'https://www.deeplearning.ai/courses/natural-language-processing-specialization/', isFree: false),
+        Course(title: 'Grokking System Design', provider: 'Educative', providerLogo: '📐', description: 'Master system design interviews', duration: '20 hours', level: 'Advanced', category: 'System Design', url: 'https://www.educative.io/courses/grokking-the-system-design-interview', isFree: false),
+        Course(title: 'Advanced DSA', provider: 'AlgoExpert', providerLogo: '🏆', description: '160+ interview questions explained', duration: 'Self-paced', level: 'Advanced', category: 'DSA', url: 'https://www.algoexpert.io/', isFree: false),
       ];
       
       _opportunities = [
@@ -98,6 +117,9 @@ class _CoursesScreenState extends State<CoursesScreen> with SingleTickerProvider
     if (_selectedCategory == 'All') return _courses;
     return _courses.where((c) => c.category == _selectedCategory).toList();
   }
+
+  List<Course> get _freeCourses => _filteredCourses.where((c) => c.isFree).toList();
+  List<Course> get _paidCourses => _filteredCourses.where((c) => !c.isFree).toList();
 
   @override
   Widget build(BuildContext context) {
@@ -214,13 +236,33 @@ class _CoursesScreenState extends State<CoursesScreen> with SingleTickerProvider
                         ),
                       ),
                       const SizedBox(height: 12),
-                      // Course list
+                      // Course list with Free/Paid sections
                       Expanded(
-                        child: ListView.builder(
+                        child: ListView(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           physics: const ClampingScrollPhysics(),
-                          itemCount: _filteredCourses.length,
-                          itemBuilder: (context, index) => CourseCard(course: _filteredCourses[index]),
+                          children: [
+                            // Free Courses Section
+                            if (_freeCourses.isNotEmpty) ...[
+                              _SectionHeader(
+                                title: '🆓 Free Courses',
+                                count: _freeCourses.length,
+                                isDark: isDark,
+                              ),
+                              ..._freeCourses.map((course) => CourseCard(course: course)),
+                            ],
+                            
+                            // Premium Courses Section
+                            if (_paidCourses.isNotEmpty) ...[
+                              const SizedBox(height: 16),
+                              _SectionHeader(
+                                title: '⭐ Premium Courses',
+                                count: _paidCourses.length,
+                                isDark: isDark,
+                              ),
+                              ..._paidCourses.map((course) => CourseCard(course: course)),
+                            ],
+                          ],
                         ),
                       ),
                     ],
@@ -238,6 +280,53 @@ class _CoursesScreenState extends State<CoursesScreen> with SingleTickerProvider
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  final String title;
+  final int count;
+  final bool isDark;
+
+  const _SectionHeader({
+    required this.title,
+    required this.count,
+    required this.isDark,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: isDark ? AppTheme.textPrimary : AppTheme.lightTextPrimary,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+            decoration: BoxDecoration(
+              color: AppTheme.primaryColor.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Text(
+              '$count',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: AppTheme.primaryColor,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

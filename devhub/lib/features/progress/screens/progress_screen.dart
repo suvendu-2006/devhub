@@ -489,6 +489,126 @@ class _ProgressScreenState extends State<ProgressScreen> {
         )),
         
         const SizedBox(height: 20),
+        
+        // Recommended Tasks Section
+        _buildRecommendedTasks(isDark, analysis.matchPercentage, goal),
+        
+        const SizedBox(height: 20),
+      ],
+    );
+  }
+
+  Widget _buildRecommendedTasks(bool isDark, double matchPercentage, CareerGoal goal) {
+    // Generate personalized tasks based on progress percentage
+    List<Map<String, dynamic>> tasks = [];
+    
+    if (matchPercentage < 30) {
+      // Beginner level tasks
+      tasks = [
+        {'icon': '📚', 'title': 'Complete a Getting Started Tutorial', 'desc': 'Start with basics of ${goal.requiredSkills.first}', 'difficulty': 'Easy'},
+        {'icon': '🎯', 'title': 'Solve 5 Easy Coding Problems', 'desc': 'Practice on LeetCode or HackerRank', 'difficulty': 'Easy'},
+        {'icon': '📖', 'title': 'Read Documentation', 'desc': 'Study official docs for one skill you want to learn', 'difficulty': 'Easy'},
+        {'icon': '🛠️', 'title': 'Build a Simple Project', 'desc': 'Create a todo app or calculator', 'difficulty': 'Easy'},
+        {'icon': '🎥', 'title': 'Watch a Tutorial Course', 'desc': 'Complete a beginner course on a key skill', 'difficulty': 'Easy'},
+      ];
+    } else if (matchPercentage < 60) {
+      // Intermediate level tasks
+      tasks = [
+        {'icon': '🔥', 'title': 'Solve 10 Medium Problems', 'desc': 'Focus on data structures and algorithms', 'difficulty': 'Medium'},
+        {'icon': '🏗️', 'title': 'Build a Full-Stack Project', 'desc': 'Create a project showcasing multiple skills', 'difficulty': 'Medium'},
+        {'icon': '🤝', 'title': 'Contribute to Open Source', 'desc': 'Make your first PR on GitHub', 'difficulty': 'Medium'},
+        {'icon': '📝', 'title': 'Write Technical Blog Posts', 'desc': 'Document your learning journey', 'difficulty': 'Medium'},
+        {'icon': '🎤', 'title': 'Practice Mock Interviews', 'desc': 'Use Pramp or practice with peers', 'difficulty': 'Medium'},
+        {'icon': '🧪', 'title': 'Learn Testing', 'desc': 'Add unit tests to your projects', 'difficulty': 'Medium'},
+      ];
+    } else {
+      // Advanced level tasks
+      tasks = [
+        {'icon': '⚡', 'title': 'Solve 5 Hard Problems', 'desc': 'Challenge yourself with complex algorithms', 'difficulty': 'Hard'},
+        {'icon': '🏛️', 'title': 'Design a System', 'desc': 'Create architecture for a scalable application', 'difficulty': 'Hard'},
+        {'icon': '🌟', 'title': 'Lead an Open Source Project', 'desc': 'Start or maintain a library/tool', 'difficulty': 'Hard'},
+        {'icon': '🎓', 'title': 'Mentor Others', 'desc': 'Help beginners and solidify your knowledge', 'difficulty': 'Hard'},
+        {'icon': '🚀', 'title': 'Build Production-Ready App', 'desc': 'Deploy a fully functional application', 'difficulty': 'Hard'},
+        {'icon': '📊', 'title': 'Optimize Performance', 'desc': 'Profile and improve a complex system', 'difficulty': 'Hard'},
+      ];
+    }
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Text('🎯 Recommended Tasks', style: TextStyle(color: isDark ? AppTheme.textPrimary : AppTheme.lightTextPrimary, fontWeight: FontWeight.bold, fontSize: 14)),
+            const Spacer(),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                color: matchPercentage >= 60 ? AppTheme.successColor.withOpacity(0.15) : 
+                       matchPercentage >= 30 ? AppTheme.warningColor.withOpacity(0.15) : 
+                       AppTheme.primaryColor.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                matchPercentage >= 60 ? 'Advanced' : matchPercentage >= 30 ? 'Intermediate' : 'Beginner',
+                style: TextStyle(
+                  color: matchPercentage >= 60 ? AppTheme.successColor : 
+                         matchPercentage >= 30 ? AppTheme.warningColor : 
+                         AppTheme.primaryColor,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 4),
+        Text('Complete these to improve your skills', style: TextStyle(color: isDark ? AppTheme.textMuted : AppTheme.lightTextSecondary, fontSize: 11)),
+        const SizedBox(height: 12),
+        ...tasks.take(6).map((task) => Container(
+          margin: const EdgeInsets.only(bottom: 10),
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: isDark ? AppTheme.cardColor : Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: isDark ? AppTheme.surfaceColor : Colors.grey.shade200),
+          ),
+          child: Row(
+            children: [
+              Text(task['icon'], style: const TextStyle(fontSize: 24)),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(task['title'], style: TextStyle(color: isDark ? AppTheme.textPrimary : AppTheme.lightTextPrimary, fontWeight: FontWeight.w600, fontSize: 13)),
+                    const SizedBox(height: 2),
+                    Text(task['desc'], style: TextStyle(color: isDark ? AppTheme.textMuted : AppTheme.lightTextSecondary, fontSize: 11)),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: task['difficulty'] == 'Easy' ? AppTheme.successColor.withOpacity(0.15) :
+                         task['difficulty'] == 'Medium' ? AppTheme.warningColor.withOpacity(0.15) :
+                         AppTheme.errorColor.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Text(
+                  task['difficulty'],
+                  style: TextStyle(
+                    color: task['difficulty'] == 'Easy' ? AppTheme.successColor :
+                           task['difficulty'] == 'Medium' ? AppTheme.warningColor :
+                           AppTheme.errorColor,
+                    fontSize: 9,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        )),
       ],
     );
   }

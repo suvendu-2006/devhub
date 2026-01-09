@@ -189,6 +189,12 @@ class AppTheme {
     end: Alignment.bottomRight,
   );
 
+  static const LinearGradient successGradient = LinearGradient(
+    colors: [Color(0xFF10B981), Color(0xFF059669)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
   static BoxDecoration get gradientCardDecoration => BoxDecoration(
     color: cardColor,
     borderRadius: BorderRadius.circular(16),
